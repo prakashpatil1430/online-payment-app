@@ -1,53 +1,16 @@
 from django.db import models
 import uuid
 from shortuuid.django_fields import ShortUUIDField
+
 from userauths.models import User
-from django.db.models.signals import post_save
 
-
-ACCOUNT_STATUS = (
-    ('active', 'Active'),
-    ('in-active', 'In-cctive'),
+from core.constans import (
+    ACCOUNT_STATUS,
+    MARITAL_STATUS,
+    GENDER,
+    NATIONALITY_CHOICES,
+    IDENTITY_TYPE
 )
-
-MARITAL_STATUS = (
-    ('married', 'Married'),
-    ('single', 'Single'),
-    ('other', 'Other'),
-)
-
-GENDER = (
-    ('male', "Male"),
-    ("female", "Female"),
-    ("other", "Other")
-)
-
-NATIONALITY_CHOICES = [
-    ('united status', 'United States'),
-    ('united kingdom', 'United Kingdom'),
-    ('canada', 'Canada'),
-    ('australia', 'Australia'),
-    ('india', 'India'),
-]
-
-IDENTITY_TYPE = (
-    ("adhar_card", "Adhar Card"),
-    ("driving_licience", "Driving Licence"),
-    ("international_passport", "Innternational Passport"),
-)
-
-
-def user_directory_path(instance, filename):
-    extentions = filename.split('.')[-1]
-    filename = "%s_%s" % (instance.id, extentions)
-    return "user_{0}/{1}".format(instance.user.id, filename)
-
-
-ACCOUNT_STATUS = [
-    ('in-active', 'In-Active'),
-    ('active', 'Active'),
-    # Add more choices as needed
-]
 
 
 class Account(models.Model):
@@ -57,9 +20,11 @@ class Account(models.Model):
     account_balance = models.DecimalField(
         max_digits=12, decimal_places=2, default=0.00)
     account_number = ShortUUIDField(
-        unique=True, length=10, max_length=25, prefix="217", alphabet="1234567890")
+        unique=True, length=10, max_length=25, prefix="217",
+        alphabet="1234567890")
     account_id = ShortUUIDField(
-        unique=True, length=7, max_length=25, prefix="PEX", alphabet="1234567890")
+        unique=True, length=7, max_length=25, prefix="PEX",
+        alphabet="1234567890")
     pin_number = ShortUUIDField(
         unique=True, length=4, max_length=7, alphabet="1234567890")
     red_code = ShortUUIDField(unique=True, length=10,
@@ -70,16 +35,14 @@ class Account(models.Model):
     kyc_submitted = models.BooleanField(default=False)
     kyc_confirmed = models.BooleanField(default=False)
     recommended_by = models.ForeignKey(
-        User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='recommended_by')
+        User, on_delete=models.DO_NOTHING, blank=True, null=True,
+        related_name='recommended_by')
 
     class Meta:
         ordering = ['-date']
 
     def __str__(self):
-        try:
-            return str(self.user)
-        except:
-            return "Account Model"
+        return str(self.user)
 
 
 class KYC(models.Model):
@@ -98,7 +61,8 @@ class KYC(models.Model):
     signature = models.ImageField(upload_to='kyc')
 
     # Address
-    country = models.CharField(max_length=100)
+    country = models.CharField(
+        choices=NATIONALITY_CHOICES, max_length=50, default='')
     state = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
 
@@ -109,16 +73,3 @@ class KYC(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user}"
-
-
-def create_account(sender, instance, created, **kwargs):
-    if created:
-        Account.objects.create(user=instance)
-
-
-def save_account(sender, instance, **kwargs):
-    instance.account.save()
-
-
-post_save.connect(create_account, sender=User)
-post_save.connect(save_account, sender=User)

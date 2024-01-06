@@ -8,6 +8,4 @@ urlpatterns = [
     path("kyc-reg/", views.kyc_registration, name="kyc-reg"),
     path("kyc-update/", views.kyc_update, name="kyc-update"),
     path("dashboard/", views.dashboard, name="dashboard"),
-    
-    
 ]

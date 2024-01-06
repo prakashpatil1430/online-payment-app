@@ -8,7 +8,7 @@ from userauths.forms import UserRegisterForm
 
 def RegisterView(request):
     if request.user.is_authenticated:
-        messages.warning(request, f"You are already logged in.")
+        messages.warning(request, "You are already logged in.")
         return redirect("core:index")
 
     if request.method == "POST":
@@ -18,8 +18,8 @@ def RegisterView(request):
             new_user = form.save()  # new_user.email
             username = form.cleaned_data.get("username")
             # username = request.POST.get("username")
-            messages.success(
-                request, f"Hey {username}, your account was created successfully.")
+            messages.success(request, f"""Hey {username},
+                your account was created successfully.""")
             # new_user = authenticate(username=form.cleaned_data.get('email'))
             new_user = authenticate(username=form.cleaned_data['email'],
                                     password=form.cleaned_data['password1'])

@@ -24,7 +24,7 @@
                             <p>Payment <b>{{transaction.amount}}</b> </p>
                             <p>Transaction Id <b>{{transaction.transaction_id}}</p>
                             <p>Sent to   <b>{{account.user.kyc.full_name}}</b></p>
-                            <h5><a href=""><b>View Detail</b></a> | <a href="{% url 'core:transactions' %}"><b>Send Another Payment</b></a></h5>
+                            <h5><a href=""><b>View Detail</b></a> | <a href="{% url 'transaction:transactions' %}"><b>Send Another Payment</b></a></h5>
                         </div>
                         <!-- <div class="share-link">
                             <p>Share direct link with your  payer</p>

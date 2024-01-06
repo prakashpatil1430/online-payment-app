@@ -1,14 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-
-# Create your views here.
 
 
 def index(request):
+    user = ''
+    if request.user.is_authenticated:
+        user = request.user
     context = {
-        'user': request.user
+        'user': user
     }
     return render(request, 'core/index.html', context)
-
-# def shows(request):
-#     return HttpResponse("hi")

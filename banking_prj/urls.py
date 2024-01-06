@@ -25,6 +25,8 @@ urlpatterns = [
     path('user/', include('userauths.urls')),
     path('', include('core.urls')),
     path('account/', include('account.urls')),
+    path('', include('transaction.urls')),
+    path('', include('cards.urls')),
 ]
 
 
